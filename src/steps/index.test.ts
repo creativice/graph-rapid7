@@ -1,15 +1,16 @@
 import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 
 import { IntegrationConfig } from '../types';
-import { fetchGroups, fetchUsers } from './access';
+import { fetchUsers } from './access';
 import { fetchAccountDetails } from './account';
 
-const DEFAULT_CLIENT_ID = 'dummy-acme-client-id';
-const DEFAULT_CLIENT_SECRET = 'dummy-acme-client-secret';
+const DEFAULT_CLIENT_REGION = 'eu';
+const DEFAULT_CLIENT_ACCESS_TOKEN = 'eu';
 
 const integrationConfig: IntegrationConfig = {
-  clientId: process.env.CLIENT_ID || DEFAULT_CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET || DEFAULT_CLIENT_SECRET,
+  clientRegion: process.env.CLIENT_REGION || DEFAULT_CLIENT_REGION,
+  clientAccessToken:
+    process.env.CLIENT_ACCESS_TOKEN || DEFAULT_CLIENT_ACCESS_TOKEN,
 };
 
 test('should collect data', async () => {
@@ -21,7 +22,6 @@ test('should collect data', async () => {
   // See https://github.com/JupiterOne/sdk/issues/262.
   await fetchAccountDetails(context);
   await fetchUsers(context);
-  await fetchGroups(context);
 
   // Review snapshot, failure is a regression
   expect({
@@ -41,14 +41,12 @@ test('should collect data', async () => {
     schema: {
       additionalProperties: false,
       properties: {
-        _type: { const: 'acme_account' },
-        manager: { type: 'string' },
+        _type: { const: 'rapid7_account' },
         _rawData: {
           type: 'array',
           items: { type: 'object' },
         },
       },
-      required: ['manager'],
     },
   });
 
@@ -59,38 +57,14 @@ test('should collect data', async () => {
     schema: {
       additionalProperties: false,
       properties: {
-        _type: { const: 'acme_user' },
+        _type: { const: 'rapid7_user' },
         firstName: { type: 'string' },
+        lastName: { type: 'string' },
         _rawData: {
           type: 'array',
           items: { type: 'object' },
         },
       },
-      required: ['firstName'],
-    },
-  });
-
-  expect(
-    context.jobState.collectedEntities.filter((e) =>
-      e._class.includes('UserGroup'),
-    ),
-  ).toMatchGraphObjectSchema({
-    _class: ['UserGroup'],
-    schema: {
-      additionalProperties: false,
-      properties: {
-        _type: { const: 'acme_group' },
-        logoLink: {
-          type: 'string',
-          // Validate that the `logoLink` property has a URL format
-          format: 'url',
-        },
-        _rawData: {
-          type: 'array',
-          items: { type: 'object' },
-        },
-      },
-      required: ['logoLink'],
     },
   });
 });
