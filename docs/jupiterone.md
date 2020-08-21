@@ -72,3 +72,50 @@ The following relationships are created/mapped:
 | `azure_postgresql_server`    | **HAS**      | `azure_postgresql_database`   |
 | `azure_sql_server`           | **HAS**      | `azure_sql_database`          |
 | `azure_cosmosdb_account`     | **HAS**      | `azure_cosmosdb_sql_database` |
+
+<!-- {J1_DOCUMENTATION_MARKER_START} -->
+<!--
+********************************************************************************
+NOTE: ALL OF THE FOLLOWING DOCUMENTATION IS GENERATED USING THE
+"j1-integration document" COMMAND. DO NOT EDIT BY HAND! PLEASE SEE THE DEVELOPER
+DOCUMENTATION FOR USAGE INFORMATION:
+
+https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
+********************************************************************************
+-->
+
+## Data Model
+
+### Entities
+
+The following entities are created:
+
+| Resources     | Entity `_type`            | Entity `_class` |
+| ------------- | ------------------------- | --------------- |
+| Account       | `insightvm_account`       | `Account`       |
+| Asset         | `insightvm_asset`         | `Device`        |
+| Scan          | `insightvm_scan`          | `Process`       |
+| Site          | `insightvm_site`          | `Site`          |
+| User          | `insightvm_user`          | `User`          |
+| Vulnerability | `insightvm_vulnerability` | `Vulnerability` |
+
+### Relationships
+
+The following relationships are created/mapped:
+
+| Source Entity `_type`     | Relationship `_class` | Target Entity `_type` |
+| ------------------------- | --------------------- | --------------------- |
+| `insightvm_account`       | **HAS**               | `insightvm_asset`     |
+| `insightvm_account`       | **HAS**               | `insightvm_site`      |
+| `insightvm_account`       | **HAS**               | `insightvm_user`      |
+| `insightvm_site`          | **ALLOWS**            | `insightvm_user`      |
+| `insightvm_site`          | **HAS**               | `insightvm_asset`     |
+| `insightvm_site`          | **HAS**               | `insightvm_scan`      |
+| `insightvm_vulnerability` | **ALLOWS**            | `insightvm_asset`     |
+
+<!--
+********************************************************************************
+END OF GENERATED DOCUMENTATION AFTER BELOW MARKER
+********************************************************************************
+-->
+<!-- {J1_DOCUMENTATION_MARKER_END} -->
